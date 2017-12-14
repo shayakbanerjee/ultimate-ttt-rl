@@ -90,6 +90,12 @@ class TTTBoard():
     def getBoardState(self):
         return tuple([tuple(row) for row in self.board])
 
+    def getDoesBoardHaveEmptyCell(self):
+        for (i,j) in itertools.product(range(3), range(3)):
+            if self.board[i][j] == GridStates.EMPTY:
+                return True
+        return False
+
     def getBoardDecision(self):
         return self.decision
 

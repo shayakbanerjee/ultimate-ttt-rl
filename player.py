@@ -1,5 +1,6 @@
 from board import TTTBoardDecision, TTTBoard
 from learning import TableLearning
+from util import Util
 import random
 from copy import deepcopy
 
@@ -42,9 +43,9 @@ class RLTTTPlayer(TTTPlayer):
         self.learningAlgo.printValues()
 
     def testNextMove(self, state, i, j):
-        boardCopy = list(map(list, deepcopy(state)))
+        boardCopy = Util.nestedTupleToList(deepcopy(state))
         boardCopy[i][j] = self.player
-        return tuple(map(tuple, boardCopy))
+        return Util.nestedListToTuple(boardCopy)
 
     def makeNextMove(self):
         previousState = self.board.getBoardState()

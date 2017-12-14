@@ -1,5 +1,5 @@
 from ultimateboard import UTTTBoardDecision, UTTTBoard
-from board import GridStates
+from util import Util
 from learning import TableLearning
 import random
 from copy import deepcopy
@@ -40,49 +40,43 @@ class RandomUTTTPlayer(UTTTPlayer):
 
 class RLUTTTPlayer(UTTTPlayer):
     def __init__(self):
-        self.learningAlgo = TableLearning()
+        self.learningAlgo = TableLearning(UTTTBoardDecision)
         super(RLUTTTPlayer, self).__init__()
 
     def printValues(self):
         self.learningAlgo.printValues()
 
-    def testNextMove(self, state, i, j):
-        boardCopy = list(map(list, deepcopy(state)))
-        boardCopy[i][j] = self.player
-        return tuple(map(tuple, boardCopy))
+    def testNextMove(self, state, boardLocation, placeOnBoard):
+        boardCopy = Util.nestedTupleToList(deepcopy(state))
+        boardCopy[boardLocation[0]][boardLocation[1]][placeOnBoard[0]][placeOnBoard[1]] = self.player
+        return Util.nestedListToTuple(boardCopy)
 
     def makeNextMove(self):
         previousState = self.board.getBoardState()
         if self.isBoardActive():
-            emptyPlaces = self.board.getEmptyBoardPlaces()
-            pickOne = random.choice(emptyPlaces)
+            nextBoardLocation = self.board.getNextBoardLocation()
+            activeBoardLocations = [nextBoardLocation]
+            if None in nextBoardLocation:
+                activeBoardLocations = self.board.getActiveBoardLocations()
             if random.uniform(0, 1) < 0.8:      # Make a random move with probability 0.2
                 moveChoices = {}
-                for (i, j) in emptyPlaces:
-                    possibleNextState = self.testNextMove(previousState, i, j)
-                    moveChoices[(i, j)] = self.learningAlgo.getBoardStateValue(self.player, self.board, possibleNextState)
-                pickOne = max(moveChoices, key=moveChoices.get)
-            self.board.makeMove(self.player, pickOne[0], pickOne[1])
+                for boardLocation in activeBoardLocations:
+                    emptyPlaces = self.board.getEmptyBoardPlaces(boardLocation)
+                    for placeOnBoard in emptyPlaces:
+                        possibleNextState = self.testNextMove(previousState, boardLocation, placeOnBoard)
+                        moveChoices[(tuple(boardLocation), placeOnBoard)] = self.learningAlgo.getBoardStateValue(self.player, self.board, possibleNextState)
+                (chosenBoard, pickOne) = max(moveChoices, key=moveChoices.get)
+            else:
+                chosenBoard = random.choice(activeBoardLocations)
+                emptyPlaces = self.board.getEmptyBoardPlaces(chosenBoard)
+                pickOne = random.choice(emptyPlaces)
+            self.board.makeMove(self.player, chosenBoard, pickOne)
         return previousState
 
     def learnFromMove(self, prevBoardState):
         self.learningAlgo.learnFromMove(self.player, self.board, prevBoardState)
 
-
-def playAGame(board, player1, player2):
-    while board.getBoardDecision() == UTTTBoardDecision.ACTIVE:
-        player1.setBoard(board, GridStates.PLAYER_X)
-        player2.setBoard(board, GridStates.PLAYER_O)
-        pState1 = player1.makeNextMove()
-        player1.learnFromMove(pState1)
-        player2.learnFromMove(pState1)
-        pState2 = player2.makeNextMove()
-        player1.learnFromMove(pState2)
-        player2.learnFromMove(pState2)
-    return board.getBoardDecision()
-
 if __name__  == '__main__':
     board = UTTTBoard()
     player1 = RandomUTTTPlayer()
-    player2 = RandomUTTTPlayer()
-    playAGame(board, player1, player2)
+    player2 = RLUTTTPlayer()

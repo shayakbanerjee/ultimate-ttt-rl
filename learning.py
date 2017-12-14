@@ -1,14 +1,15 @@
 from board import GridStates, TTTBoardDecision
 
 class TableLearning(object):
-    def __init__(self):
+    def __init__(self, DecisionClass=TTTBoardDecision):
         self.values = {}
+        self.DecisionClass = DecisionClass
 
     def getBoardStateValue(self, player, board, boardState):
         decision = board.getBoardDecision()
-        if decision == TTTBoardDecision.WON_X:
+        if decision == self.DecisionClass.WON_X:
             self.values[boardState] = 1.0 if player == GridStates.PLAYER_X else 0.0
-        if decision == TTTBoardDecision.WON_O:
+        if decision == self.DecisionClass.WON_O:
             self.values[boardState] = 1.0 if player == GridStates.PLAYER_O else 0.0
         if boardState not in self.values:
             self.values[boardState] = 0.5

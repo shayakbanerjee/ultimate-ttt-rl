@@ -57,7 +57,7 @@ class UTTTBoard(object):
     def getActiveBoardLocations(self):
         activeBoards = []
         for (i, j) in itertools.product(range(3), range(3)):
-            if self.board[i][j].getBoardDecision() == TTTBoardDecision.ACTIVE:
+            if self.board[i][j].getBoardDecision() == TTTBoardDecision.ACTIVE or self.board[i][j].getDoesBoardHaveEmptyCell():
                 activeBoards.append((i, j))
         return activeBoards
 
