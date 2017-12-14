@@ -1,4 +1,4 @@
-from board import TTTBoardDecision, GridStates, TTTBoard
+from board import TTTBoardDecision, TTTBoard
 from learning import TableLearning
 import random
 from copy import deepcopy
