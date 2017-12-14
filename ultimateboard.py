@@ -11,7 +11,7 @@ class UTTTBoard(object):
     def __init__(self):
         self.board = self.emptyState()
         self.decision = UTTTBoardDecision.ACTIVE
-        self.nextBoard = [None, None]
+        self.nextBoardLocation = [None, None]
 
     def emptyState(self):
         return [[TTTBoard(), TTTBoard(), TTTBoard()],
@@ -20,11 +20,11 @@ class UTTTBoard(object):
 
     def determineBoardState(self):
         def winCheck(listOfThree):
-            threeResults = map(lambda x: x.determineBoardState(), listOfThree)
+            threeResults = map(lambda x: x.getBoardDecision(), listOfThree)
             return len(set(threeResults)) == 1 and threeResults[0] in [TTTBoardDecision.WON_O, TTTBoardDecision.WON_X]
 
         def getWinState(listOfThree):
-            threeResults = map(lambda x: x.determineBoardState(), listOfThree)
+            threeResults = map(lambda x: x.getBoardDecision(), listOfThree)
             return UTTTBoardDecision.WON_O if TTTBoardDecision.WON_O in threeResults else UTTTBoardDecision.WON_X
 
         for row in self.board:  # Check rows first
@@ -45,17 +45,24 @@ class UTTTBoard(object):
             self.decision = getWinState(diagonal2)
             return
         self.decision = UTTTBoardDecision.DRAW
-        for (i,j) in itertools.product([0,1,2],[0,1,2]):
+        for (i,j) in itertools.product(range(3), range(3)):
             if self.board[i][j].getBoardDecision() == TTTBoardDecision.ACTIVE:
                 self.decision = UTTTBoardDecision.ACTIVE
                 return
 
-    def getEmptyBoardPlaces(self, i, j):
-        nextBoard = self.board[i][j]
+    def getEmptyBoardPlaces(self, whichBoard):
+        nextBoard = self.board[whichBoard[0]][whichBoard[1]]
         return nextBoard.getEmptyBoardPlaces()
 
-    def getNextBoard(self):
-        return self.nextBoard
+    def getActiveBoardLocations(self):
+        activeBoards = []
+        for (i, j) in itertools.product(range(3), range(3)):
+            if self.board[i][j].getBoardDecision() == TTTBoardDecision.ACTIVE:
+                activeBoards.append((i, j))
+        return activeBoards
+
+    def getNextBoardLocation(self):
+        return self.nextBoardLocation
 
     def makeMove(self, who, whichBoard, whichLocation):
         tttboard = self.board[whichBoard[0]][whichBoard[1]]
@@ -68,12 +75,13 @@ class UTTTBoard(object):
         self.determineBoardState()
         if self.decision == UTTTBoardDecision.DRAW:
             print 'This Ultimate-TTT game was drawn!'
-            self.nextBoard = [None, None]
+            self.nextBoardLocation = [None, None]
         elif self.decision != UTTTBoardDecision.ACTIVE:
             print 'This Ultimate-TTT game was won by %s'%(GridStates.PLAYER_X if self.decision == UTTTBoardDecision.WON_X else GridStates.PLAYER_O)
+            self.nextBoardLocation = [None, None]
         else:
             nextTttboard = self.board[i][j]
-            self.nextBoard = [i, j] if nextTttboard.getBoardDecision() == TTTBoardDecision.ACTIVE else [None, None]
+            self.nextBoardLocation = [i, j] if nextTttboard.getBoardDecision() == TTTBoardDecision.ACTIVE else [None, None]
 
     def printBoard(self):
         delimiter = '-------------'*3+'\n'
@@ -100,11 +108,11 @@ class UTTTBoard(object):
 if __name__ == '__main__':
     b = UTTTBoard()
     b.makeMove(GridStates.PLAYER_X, (1,1), (1,1))
-    b.makeMove(GridStates.PLAYER_O, b.getNextBoard(), (1,2))
-    b.makeMove(GridStates.PLAYER_X, b.getNextBoard(), (1,1))
-    b.makeMove(GridStates.PLAYER_O, b.getNextBoard(), (0,2))
-    b.makeMove(GridStates.PLAYER_X, b.getNextBoard(), (1,1))
-    b.makeMove(GridStates.PLAYER_O, b.getNextBoard(), (2,2))
-    b.makeMove(GridStates.PLAYER_X, b.getNextBoard(), (1,1))
-    b.makeMove(GridStates.PLAYER_O, b.getNextBoard(), (2,1))
-    b.makeMove(GridStates.PLAYER_X, b.getNextBoard(), (1,1))
+    b.makeMove(GridStates.PLAYER_O, b.getNextBoardLocation(), (1, 2))
+    b.makeMove(GridStates.PLAYER_X, b.getNextBoardLocation(), (1, 1))
+    b.makeMove(GridStates.PLAYER_O, b.getNextBoardLocation(), (0, 2))
+    b.makeMove(GridStates.PLAYER_X, b.getNextBoardLocation(), (1, 1))
+    b.makeMove(GridStates.PLAYER_O, b.getNextBoardLocation(), (2, 2))
+    b.makeMove(GridStates.PLAYER_X, b.getNextBoardLocation(), (1, 1))
+    b.makeMove(GridStates.PLAYER_O, b.getNextBoardLocation(), (2, 1))
+    b.makeMove(GridStates.PLAYER_X, b.getNextBoardLocation(), (1, 1))
