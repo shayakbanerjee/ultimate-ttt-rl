@@ -2,6 +2,7 @@ from board import TTTBoardDecision, GridStates, TTTBoard
 from ultimateboard import UTTTBoard, UTTTBoardDecision
 from player import RandomTTTPlayer, RLTTTPlayer
 from ultimateplayer import RandomUTTTPlayer, RLUTTTPlayer
+from learning import NNUltimateLearning
 from plotting import drawXYPlotByFactor
 import os
 
@@ -52,16 +53,17 @@ def playTTTAndPlotResults():
     drawXYPlotByFactor(plotValues, 'Set Number', 'Fraction')
 
 def playUltimateAndPlotResults():
-    learningPlayer = RLUTTTPlayer()
+    learningPlayer = RLUTTTPlayer(NNUltimateLearning)
     randomPlayer = RandomUTTTPlayer()
     results = []
-    numberOfSetsOfGames = 4
+    numberOfSetsOfGames = 40
     if os.path.isfile(LEARNING_FILE):
         learningPlayer.loadLearning(LEARNING_FILE)
     for i in range(numberOfSetsOfGames):
         games = GameSequence(100, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
         results.append(games.playGamesAndGetWinPercent())
     learningPlayer.saveLearning(LEARNING_FILE)
+    writeResultsToFile(results)
     plotValues = {'X Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[0], results)),
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}

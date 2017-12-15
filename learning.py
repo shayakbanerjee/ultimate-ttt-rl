@@ -7,15 +7,21 @@ import numpy as np
 
 class GenericLearning(object):
     def getBoardStateValue(self, player, board, boardState):
+        # Return the perceived `value` of a given board state
         raise NotImplementedError
 
     def learnFromMove(self, player, board, prevBoardState):
+        # Learn from the previous board state and the current state of the board
         raise NotImplementedError
 
     def saveModel(self, filename):
+        # Save to file (use pass if no implementation is necessary)
+        # Useful for saving intermediate states of the learning model
         raise NotImplementedError
 
     def loadModel(self, filename):
+        # Load an intermediate state of the learning model from file
+        # Use only if also saving the intermediate state above
         raise NotImplementedError
 
 class TableLearning(GenericLearning):
