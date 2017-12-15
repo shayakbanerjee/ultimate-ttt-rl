@@ -70,8 +70,8 @@ class UTTTBoard(object):
         if tttboard.getGrid(i, j) != GridStates.EMPTY:
             print 'That location is not empty'
             return
-        tttboard.makeMove(who, i, j)
-        self.printBoard()
+        tttboard.makeMove(who, i, j, verbose=False)
+        #self.printBoard()
         self.determineBoardState()
         if self.decision == UTTTBoardDecision.DRAW:
             print 'This Ultimate-TTT game was drawn!'

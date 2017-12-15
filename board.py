@@ -50,17 +50,17 @@ class TTTBoard():
         else:
             self.decision = TTTBoardDecision.DRAW
 
-    def makeMove(self, who, i, j):   # who is PLAYER_X or PLAYER_O
+    def makeMove(self, who, i, j, verbose=True):   # who is PLAYER_X or PLAYER_O
         if self.board[i][j] != GridStates.EMPTY:
             print 'That location is not empty'
             return
-        print '%s moves'%(who)
+        #print '%s moves'%(who)
         self.board[i][j] = who
         #self.printBoard()
         self.determineBoardState()
-        if self.decision == TTTBoardDecision.DRAW:
+        if self.decision == TTTBoardDecision.DRAW and verbose is True:
             print 'This TTT game was drawn!'
-        elif self.decision != TTTBoardDecision.ACTIVE:
+        elif self.decision != TTTBoardDecision.ACTIVE and verbose is True:
             print 'This TTT game was won by %s'%(GridStates.PLAYER_X if self.decision == TTTBoardDecision.WON_X else GridStates.PLAYER_O)
 
     def printBoard(self):
