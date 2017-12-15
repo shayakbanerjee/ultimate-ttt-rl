@@ -1,6 +1,8 @@
 # The Ultimate Tic Tac Toe Player - with Reinforcement Learning
 Reinforcement Learning based Ultimate Tic Tac Toe player
 
+![ultimate tic tac toe image](https://github.com/shayakbanerjee/ultimate-ttt-rl/raw/master/figures/sequence-of-moves.png)
+
 ## Background
 For more details on the game of Ultimate Tic Tac Toe and why I started this project, refer to my [blog article](https://medium.com/@shayak_89588/playing-ultimate-tic-tac-toe-with-reinforcement-learning-7bea5b9d7252)
 
