@@ -62,6 +62,15 @@ class GenericLearning(object):
 ```
 Any learning model must inherit from this class and implement the above methods. For examples see `TableLearning` for a lookup table based solution, and `NNUltimateLearning` for a neural network based solution.
 
+## Using your own learning algorithm
+Simple implement your learning model e.g. `MyLearningModel` by inheriting from `GenericLearning`. Then instantiate the provided reinforcement learning bot with this model:
+```python
+   class MyLearningModel(GenericLearning):
+       pass
+   
+   learningPlayer = RLUTTTPlayer(MyLearningModel)
+```
+
 ## Sequence of games
 More often than not you will want to just play a sequence of games and observe the learning over time. Code samples for that have been provided and use the `GameSequence` class
 ```python
