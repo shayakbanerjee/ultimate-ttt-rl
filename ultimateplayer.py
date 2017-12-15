@@ -1,6 +1,5 @@
 from ultimateboard import UTTTBoardDecision, UTTTBoard
-from util import Util
-from learning import TableLearning
+from learning import TableLearning, NNUltimateLearning
 import random
 
 class UTTTPlayer(object):
@@ -39,7 +38,8 @@ class RandomUTTTPlayer(UTTTPlayer):
 
 class RLUTTTPlayer(UTTTPlayer):
     def __init__(self):
-        self.learningAlgo = TableLearning(UTTTBoardDecision)
+        #self.learningAlgo = TableLearning(UTTTBoardDecision)
+        self.learningAlgo = NNUltimateLearning(UTTTBoardDecision)
         super(RLUTTTPlayer, self).__init__()
 
     def printValues(self):

@@ -1,8 +1,6 @@
 from board import TTTBoardDecision, TTTBoard
 from learning import TableLearning
-from util import Util
 import random
-from copy import deepcopy
 
 class TTTPlayer(object):
     def __init__(self):

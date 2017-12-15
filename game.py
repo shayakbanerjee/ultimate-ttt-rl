@@ -5,6 +5,9 @@ from ultimateplayer import RandomUTTTPlayer, RLUTTTPlayer
 from plotting import drawXYPlotByFactor
 import os
 
+LEARNING_FILE = 'ultimate_player_nn1.h5'
+WIN_PCT_FILE = 'win_pct_player_1.csv'
+
 class GameSequence(object):
     def __init__(self, numberOfGames, player1, player2, BoardClass=TTTBoard, BoardDecisionClass=TTTBoardDecision):
         self.player1 = player1
@@ -41,7 +44,7 @@ def playTTTAndPlotResults():
     results = []
     numberOfSetsOfGames = 40
     for i in range(numberOfSetsOfGames):
-        games = GameSequence(100, randomPlayer, learningPlayer)
+        games = GameSequence(100, learningPlayer, randomPlayer)
         results.append(games.playGamesAndGetWinPercent())
     plotValues = {'X Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[0], results)),
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
@@ -52,14 +55,22 @@ def playUltimateAndPlotResults():
     learningPlayer = RLUTTTPlayer()
     randomPlayer = RandomUTTTPlayer()
     results = []
-    numberOfSetsOfGames = 1
+    numberOfSetsOfGames = 4
+    if os.path.isfile(LEARNING_FILE):
+        learningPlayer.loadLearning(LEARNING_FILE)
     for i in range(numberOfSetsOfGames):
-        games = GameSequence(1000, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
+        games = GameSequence(100, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
         results.append(games.playGamesAndGetWinPercent())
+    learningPlayer.saveLearning(LEARNING_FILE)
     plotValues = {'X Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[0], results)),
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}
     drawXYPlotByFactor(plotValues, 'Set Number', 'Fraction')
+
+def writeResultsToFile(results):
+    with open(WIN_PCT_FILE, 'a') as outfile:
+        for result in results:
+            outfile.write('%s,%s,%s\n'%(result[0], result[1], result[2]))
 
 if __name__ == '__main__':
     #playTTTAndPlotResults()
