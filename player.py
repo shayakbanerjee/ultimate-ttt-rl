@@ -43,9 +43,9 @@ class RLTTTPlayer(TTTPlayer):
         self.learningAlgo.printValues()
 
     def testNextMove(self, state, i, j):
-        boardCopy = Util.nestedTupleToList(deepcopy(state))
-        boardCopy[i][j] = self.player
-        return Util.nestedListToTuple(boardCopy)
+        boardCopy = list(state)
+        boardCopy[3*i+j] = self.player
+        return ''.join(boardCopy)
 
     def makeNextMove(self):
         previousState = self.board.getBoardState()

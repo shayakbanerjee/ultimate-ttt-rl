@@ -100,7 +100,11 @@ class UTTTBoard(object):
         return rowString
 
     def getBoardState(self):
-        return tuple([tuple(map(lambda x: x.getBoardState(), row)) for row in self.board])
+        boardStrings = []
+        for (i,j) in itertools.product(range(3), range(3)):
+            board = self.board[i][j]
+            [boardStrings.append(''.join(board.board[i])) for i in range(3)]
+        return ''.join(boardStrings)
 
     def getBoardDecision(self):
         return self.decision

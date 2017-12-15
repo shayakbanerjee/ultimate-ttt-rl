@@ -1,4 +1,5 @@
 from board import GridStates, TTTBoardDecision
+import json
 
 class TableLearning(object):
     def __init__(self, DecisionClass=TTTBoardDecision):
@@ -24,5 +25,13 @@ class TableLearning(object):
 
     def printValues(self):
         from pprint import pprint
+        #pprint(filter(lambda x: x!=0.5, self.values.values()))
         pprint(self.values)
         print 'Total number of states: %s' % (len(self.values))
+        print 'Total number of knowledgeable states: %s' % (len(filter(lambda x: x!=0.5, self.values.values())))
+
+    def saveLearning(self, filename):
+        json.dump(self.values, open(filename,'w'))
+
+    def loadLearning(self, filename):
+        self.values = json.load(open(filename, 'r'))

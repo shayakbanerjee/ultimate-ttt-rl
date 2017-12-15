@@ -2,7 +2,6 @@ from ultimateboard import UTTTBoardDecision, UTTTBoard
 from util import Util
 from learning import TableLearning
 import random
-from copy import deepcopy
 
 class UTTTPlayer(object):
     def __init__(self):
@@ -47,9 +46,10 @@ class RLUTTTPlayer(UTTTPlayer):
         self.learningAlgo.printValues()
 
     def testNextMove(self, state, boardLocation, placeOnBoard):
-        boardCopy = Util.nestedTupleToList(deepcopy(state))
-        boardCopy[boardLocation[0]][boardLocation[1]][placeOnBoard[0]][placeOnBoard[1]] = self.player
-        return Util.nestedListToTuple(boardCopy)
+        loc = 27*boardLocation[0] + 9*boardLocation[1] + 3*placeOnBoard[0] + placeOnBoard[1]
+        boardCopy = list(state)
+        boardCopy[loc] = self.player
+        return ''.join(boardCopy)
 
     def makeNextMove(self):
         previousState = self.board.getBoardState()
@@ -75,6 +75,12 @@ class RLUTTTPlayer(UTTTPlayer):
 
     def learnFromMove(self, prevBoardState):
         self.learningAlgo.learnFromMove(self.player, self.board, prevBoardState)
+
+    def saveLearning(self, filename):
+        self.learningAlgo.saveLearning(filename)
+
+    def loadLearning(self, filename):
+        self.learningAlgo.loadLearning(filename)
 
 if __name__  == '__main__':
     board = UTTTBoard()

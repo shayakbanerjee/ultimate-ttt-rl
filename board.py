@@ -80,15 +80,14 @@ class TTTBoard():
         return self.board[i][j]
 
     def getEmptyBoardPlaces(self):
-        boardState = self.getBoardState()
         emptyPlaces = []
         for (i,j) in itertools.product(range(3), range(3)):
-            if boardState[i][j] == GridStates.EMPTY:
+            if self.board[i][j] == GridStates.EMPTY:
                 emptyPlaces.append((i,j))
         return emptyPlaces
 
     def getBoardState(self):
-        return tuple([tuple(row) for row in self.board])
+        return ''.join([''.join(row) for row in self.board])
 
     def getDoesBoardHaveEmptyCell(self):
         for (i,j) in itertools.product(range(3), range(3)):
