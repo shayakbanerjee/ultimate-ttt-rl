@@ -20,6 +20,12 @@ class TTTPlayer(object):
     def learnFromMove(self, prevBoardState):
         raise NotImplementedError
 
+    def startNewGame(self):
+        pass
+
+    def finishGame(self):
+        pass
+
 class RandomTTTPlayer(TTTPlayer):
     def makeNextMove(self):
         previousState = self.board.getBoardState()

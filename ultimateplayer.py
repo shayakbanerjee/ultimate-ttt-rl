@@ -1,5 +1,5 @@
 from ultimateboard import UTTTBoardDecision, UTTTBoard
-from learning import TableLearning, NNUltimateLearning
+from learning import TableLearning
 import random
 
 class UTTTPlayer(object):
@@ -19,6 +19,12 @@ class UTTTPlayer(object):
 
     def learnFromMove(self, prevBoardState):
         raise NotImplementedError
+
+    def startNewGame(self):
+        pass
+
+    def finishGame(self):
+        pass
 
 class RandomUTTTPlayer(UTTTPlayer):
     def makeNextMove(self):
@@ -49,6 +55,12 @@ class RLUTTTPlayer(UTTTPlayer):
         boardCopy = list(state)
         boardCopy[loc] = self.player
         return ''.join(boardCopy)
+
+    def startNewGame(self):
+        self.learningAlgo.resetForNewGame()
+
+    def finishGame(self):
+        self.learningAlgo.gameOver()
 
     def makeNextMove(self):
         previousState = self.board.getBoardState()

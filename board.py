@@ -54,7 +54,6 @@ class TTTBoard():
         if self.board[i][j] != GridStates.EMPTY:
             print 'That location is not empty'
             return
-        #print '%s moves'%(who)
         self.board[i][j] = who
         #self.printBoard()
         self.determineBoardState()
