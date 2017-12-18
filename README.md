@@ -1,12 +1,14 @@
-# The Ultimate Tic Tac Toe Player - with Reinforcement Learning
-Reinforcement Learning based Ultimate Tic Tac Toe player
+# The Ultimate Tic Tac Toe Player Bot - with Reinforcement Learning
+Reinforcement Learning based [Ultimate Tic Tac Toe](https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe) player
 
 ![ultimate tic tac toe image](https://github.com/shayakbanerjee/ultimate-ttt-rl/raw/master/figures/sequence-of-moves.png)
 
 ## Background
 For more details on the game of Ultimate Tic Tac Toe and why I started this project, refer to my [blog article](https://medium.com/@shayak_89588/playing-ultimate-tic-tac-toe-with-reinforcement-learning-7bea5b9d7252)
 
-This project is meant for others to test their learning algorithms on an existing infrastructure for the Ultimate Tic Tac Toe game. There are reinforcement learning bots, and random bots (who pick moves at random) and they are good for testing against one another
+This project is meant for others to test their learning algorithms on an existing infrastructure for the Ultimate Tic Tac Toe game. This project has two implemented reinforcement learning bots, and a random bot (that pick moves at random) and they are good for testing against one another for benchmarking performance.
+
+Credit to [this blog post](https://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/) for helping me understand the rules of the game with a lot of whiteboard drawings.
 
 ## Board
 To instantiate and play a game of ultimate tic tac toe:
@@ -15,6 +17,10 @@ To instantiate and play a game of ultimate tic tac toe:
     b.makeMove(GridStates.PLAYER_X, (1,1), (1,1))
     b.makeMove(GridStates.PLAYER_O, b.getNextBoardLocation(), (1, 2))
     b.makeMove(GridStates.PLAYER_X, b.getNextBoardLocation(), (1, 1))
+```
+To view the state of the board at any given time (you'll get a console output):
+```python
+    b.printBoard()
 ```
 
 ## Players
@@ -38,7 +44,7 @@ To play the game with these different bots.
             player2.learnFromMove(pState2)
         return board.getBoardDecision()
 ```
-The `learnFromMove` calls are optional, but necessary if the bots need to learn from every move. The example shows a random player against a reinforcement learning player, but you can choose to play RL vs RL or Random vs Random. Switching the order of player1 and player2 will assign `O` to the RL player and `X` to the Random player.
+The `learnFromMove` calls are necessary for the bots to learn from every move. The example shows a random player against a reinforcement learning player, but you can choose to play RL vs RL or Random vs Random. Switching the order of player1 and player2 will assign `O` to the RL player and `X` to the Random player.
 
 ## Learning Algorithm
 The learning algorithm is the key piece to the puzzle for making the RL bot improve its chances of winning over time. There is a generic template provided for the learning algorithm:
@@ -51,30 +57,36 @@ class GenericLearning(object):
     def learnFromMove(self, player, board, prevBoardState):
         # Learn from the previous board state and the current state of the board
         raise NotImplementedError
-
-    def saveModel(self, filename):
-        # Save to file (use pass if no implementation is necessary)
-        # Useful for saving intermediate states of the learning model
-        raise NotImplementedError
-
-    def loadModel(self, filename):
-        # Load an intermediate state of the learning model from file
-        # Use only if also saving the intermediate state above
-        raise NotImplementedError
+        
+    def resetForNewGame(self):
+        # Optional to implement. Reinitialize some form of state for each new game played
+        pass
+        
+    def gameOver(self):
+        # Option to implement. When a game is completed, run some sort of learning e.g. train a neural network
+        pass
 ```
 Any learning model must inherit from this class and implement the above methods. For examples see `TableLearning` for a lookup table based solution, and `NNUltimateLearning` for a neural network based solution.
 
 ## Using your own learning algorithm
-Simple implement your learning model e.g. `MyLearningModel` by inheriting from `GenericLearning`. Then instantiate the provided reinforcement learning bot with this model:
+Simply implement your learning model e.g. `MyLearningModel` by inheriting from `GenericLearning`. Then instantiate the provided reinforcement learning bot with an instance of this model:
 ```python
-   class MyLearningModel(GenericLearning):
-       pass
+   from ultimateboard import UTTTBoardDecision
    
-   learningPlayer = RLUTTTPlayer(MyLearningModel)
+   class MyLearningModel(GenericLearning):
+       def getBoardStateValue(self, player, board, boardState):
+           # Your implementation here
+           return value
+       
+       def learnFromMove(self, player, board, prevBoardState):
+           # Your implementation here       
+   
+   learningModel = MyLearningModel(UTTTBoardDecision)
+   learningPlayer = RLUTTTPlayer(learningModel)
 ```
 
 ## Sequence of games
-More often than not you will want to just play a sequence of games and observe the learning over time. Code samples for that have been provided and use the `GameSequence` class
+More often than not you will want to just play a sequence of games and observe the learning over time. Code samples for that have been provided and uses the `GameSequence` class
 ```python
     learningPlayer = RLUTTTPlayer()
     randomPlayer = RandomUTTTPlayer()
@@ -85,4 +97,5 @@ More often than not you will want to just play a sequence of games and observe t
         results.append(games.playGamesAndGetWinPercent())
 ```
 
-Credit to [this blog post](https://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/) for helping me understand the rules of the game with a lot of whiteboard drawings.
+## Prerequisites
+You will need to have [numpy](http://www.numpy.org) installed to work with this code. If using the neural network based learner in the examples provided, you will also need to have [keras](https://keras.io) installed. This will require one of [Tensorflow](https://github.com/tensorflow/tensorflow), [Theano](https://github.com/Theano/Theano) or [CNTK](https://github.com/Microsoft/cntk).
