@@ -13,20 +13,21 @@ def playTTTAndPlotResults():
     learningPlayer = RLTTTPlayer()
     randomPlayer = RandomTTTPlayer()
     results = []
-    numberOfSetsOfGames = 5
+    numberOfSetsOfGames = 50
     for i in range(numberOfSetsOfGames):
-        games = GameSequence(1000, learningPlayer, randomPlayer)
+        games = GameSequence(100, learningPlayer, randomPlayer)
         results.append(games.playGamesAndGetWinPercent())
     plotValues = {'X Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[0], results)),
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}
-    drawXYPlotByFactor(plotValues, 'Set Number', 'Fraction')
+    drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction', title='RL Player (X) vs. Random Player (O)')
 
 def playUltimateAndPlotResults():
-    learningPlayer = RLUTTTPlayer(NNUltimateLearning)
+    learningModel = NNUltimateLearning(UTTTBoardDecision)
+    learningPlayer = RLUTTTPlayer(learningModel)
     randomPlayer = RandomUTTTPlayer()
     results = []
-    numberOfSetsOfGames = 50
+    numberOfSetsOfGames = 60
     if os.path.isfile(LEARNING_FILE):
         learningPlayer.loadLearning(LEARNING_FILE)
     for i in range(numberOfSetsOfGames):
@@ -37,10 +38,10 @@ def playUltimateAndPlotResults():
     plotValues = {'X Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[0], results)),
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}
-    drawXYPlotByFactor(plotValues, 'Set Number', 'Fraction')
+    drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction',title='RL Player (O) vs. Random Player (X)')
 
 def playUltimateForTraining():
-    learningPlayer = RLUTTTPlayer(TableLearning)
+    learningPlayer = RLUTTTPlayer(TableLearning())
     randomPlayer = RandomUTTTPlayer()
     games = GameSequence(4000, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
     games.playGamesAndGetWinPercent()
@@ -60,10 +61,10 @@ def plotResultsFromFile(resultsFile):
     plotValues = {'X Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[0], results)),
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}
-    drawXYPlotByFactor(plotValues, 'Set Number', 'Fraction')
+    drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction', title='RL Player (O) vs. Random Player (X)')
 
 if __name__ == '__main__':
     #playTTTAndPlotResults()
     #playUltimateForTraining()
-    #playUltimateAndPlotResults()
-    plotResultsFromFile('results/ultmate_nn1_results.csv')
+    playUltimateAndPlotResults()
+    #plotResultsFromFile('results/ultimate_nn1_results_o.csv')

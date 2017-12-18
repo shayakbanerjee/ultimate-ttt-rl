@@ -43,8 +43,8 @@ class RandomUTTTPlayer(UTTTPlayer):
         pass  # Random player does not learn from move
 
 class RLUTTTPlayer(UTTTPlayer):
-    def __init__(self, Learning=TableLearning):
-        self.learningAlgo = Learning(UTTTBoardDecision)
+    def __init__(self, learningModel):
+        self.learningAlgo = learningModel
         super(RLUTTTPlayer, self).__init__()
 
     def printValues(self):
@@ -96,4 +96,4 @@ class RLUTTTPlayer(UTTTPlayer):
 if __name__  == '__main__':
     board = UTTTBoard()
     player1 = RandomUTTTPlayer()
-    player2 = RLUTTTPlayer()
+    player2 = RLUTTTPlayer(TableLearning(UTTTBoardDecision))

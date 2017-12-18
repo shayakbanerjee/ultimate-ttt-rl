@@ -15,40 +15,10 @@ def setFontProperties():
     matplotlib.rc('text', usetex=False)
     matplotlib.rcParams.update({'font.size': 14})
 
-def visualizeStateData(stateDict, dataBind, dataKey,
-                       thresholds=None,
-                       mapTitle=None,
-                       jsonFile=None,
-                       htmlFile=None):
-    statePanda = {}
-    stateCount = 0
-    for (key, value) in stateDict.items():
-        statePanda[stateCount] = [key, value]
-        stateCount += 1
-    stateData = pd.DataFrame.from_dict(statePanda, orient='index')
-    stateData.columns = [dataKey, dataBind]
-    visualizePandasData(stateData, dataBind, dataKey, thresholds, mapTitle, jsonFile, htmlFile)
-
-def visualizePandasData(stateData,dataBind, dataKey,
-                       thresholds=None,
-                       mapTitle=None,
-                       jsonFile=None,
-                       htmlFile=None):
-    state_topo = 'https://raw.githubusercontent.com/wrobstory/vincent_map_data/master/us_states.topo.json'
-    geo_data = [{'name': 'states', 'url': state_topo, 'feature': 'us_states.geo'}]
-    vis = vincent.Map(data=stateData, geo_data=geo_data, scale=1000,
-                  projection='albersUsa', data_bind=dataBind, data_key=dataKey,
-                  map_key={'states':'properties.NAME'}, brew='RdPu')
-    vis.scales[0].type='threshold'
-    vis.scales[0].domain = thresholds
-    vis.legend(title=mapTitle)
-    if jsonFile is not None and htmlFile is not None:
-        vis.to_json(jsonFile, html_out=True, html_path=htmlFile)
-
 def drawXYPlotByFactor(dataDict, xlabel='', ylabel='', legend=None,
-                       title=None, logy=False, location=2):
+                       title=None, logy=False, location=5):
     # Assuming that the data is in the format { factor: [(x1, y1),(x2,y2),...] }
-    PLOT_STYLES = ['r^-', 'bo-', 'g^-', 'ks-', 'co-', 'ms-', 'y^-']
+    PLOT_STYLES = ['r^-', 'bo-', 'g^-', 'ks-', 'ms-', 'co-', 'y^-']
     styleCount = 0
     displayedPlots = []
     pltfn = plt.semilogy if logy else plt.plot

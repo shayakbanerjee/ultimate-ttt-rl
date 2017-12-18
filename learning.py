@@ -67,7 +67,6 @@ class TableLearning(GenericLearning):
 
 class NNUltimateLearning(GenericLearning):
     STATE_TO_NUMBER_MAP = {GridStates.EMPTY: 0, GridStates.PLAYER_O: -1, GridStates.PLAYER_X: 1}
-    TABLE_LEARNING_FILE = 'table_learning.json'
 
     def __init__(self, DecisionClass=TTTBoardDecision):
         self.DecisionClass = DecisionClass
@@ -81,9 +80,9 @@ class NNUltimateLearning(GenericLearning):
         self.model.add(Dense(1, activation='linear', kernel_initializer='glorot_uniform'))
         self.model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
         plot_model(self.model, to_file='model.png')
-        #self.initialModelTraining(self.TABLE_LEARNING_FILE)
 
     def initialModelTraining(self, jsonFile):
+        # If the neural network model should be seeded from some known state/value pairs
         import os
         if os.path.isfile(jsonFile):
             self.values = json.load(open(jsonFile, 'r'))
