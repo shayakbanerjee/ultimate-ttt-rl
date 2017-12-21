@@ -6,25 +6,29 @@ Reinforcement Learning based [Ultimate Tic Tac Toe](https://en.wikipedia.org/wik
 ## Background
 For more details on the game of Ultimate Tic Tac Toe and why I started this project, refer to my [blog article](https://medium.com/@shayak_89588/playing-ultimate-tic-tac-toe-with-reinforcement-learning-7bea5b9d7252)
 
-This project is meant for others to test their learning algorithms on an existing infrastructure for the Ultimate Tic Tac Toe game. This project has two implemented reinforcement learning bots, and a random bot (that pick moves at random) and they are good for testing against one another for benchmarking performance.
+This project is meant for others to test their learning algorithms on an existing infrastructure for the Ultimate Tic Tac Toe game. This project has two implemented reinforcement learning algorithms, a reinforcement learning bot (which can use any provided learning algorithm of your choice), and a random bot (that pick moves at random) and they are good for testing against one another for benchmarking performance.
 
 Credit to [this blog post](https://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/) for helping me understand the rules of the game with a lot of whiteboard drawings.
 
 ## Board
 To instantiate and play a game of ultimate tic tac toe:
 ```python
-    b = UTTTBoard()
-    b.makeMove(GridStates.PLAYER_X, (1,1), (1,1))
-    b.makeMove(GridStates.PLAYER_O, b.getNextBoardLocation(), (1, 2))
-    b.makeMove(GridStates.PLAYER_X, b.getNextBoardLocation(), (1, 1))
+from ultimateboard import UTTTBoard
+from board import GridStates
+b = UTTTBoard()
+b.makeMove(GridStates.PLAYER_X, (1,1), (1,1))
+b.makeMove(GridStates.PLAYER_O, b.getNextBoardLocation(), (1, 2))
+b.makeMove(GridStates.PLAYER_X, b.getNextBoardLocation(), (1, 1))
 ```
-To view the state of the board at any given time (you'll get a console output):
-```python
-    b.printBoard()
-```
-
 The co-ordinate system is shown below, and is the same for the master board, as well as any tile within it:
 ![ultimate tic tac toe image](https://github.com/shayakbanerjee/ultimate-ttt-rl/raw/master/figures/coordinate_system.png)
+
+E.g. co-ordinates of `(1,1), (1,1)` as in the first move above represents the center square of the center tile.
+
+To view the state of the board at any given time (you'll get a console output):
+```python
+b.printBoard()
+```
 
 ## Players
 There are two implemented bots for playing the game
@@ -33,24 +37,24 @@ There are two implemented bots for playing the game
 
 To play the game with one or a combination of these bots, use the `SingleGame` class. E.g. with two random players
 ```python
-    from game import SingleGame
-    from ultimateplayer import RandomUTTTPlayer
-    from ultimateboard import UTTTBoard, UTTTBoardDecision
-    
-    player1, player2 = RandomUTTTPlayer(), RandomUTTTPlayer()
-    game = SingleGame(player1, player2, UTTTBoard, UTTTBoardDecision)
-    result = game.playAGame()
+from game import SingleGame
+from ultimateplayer import RandomUTTTPlayer
+from ultimateboard import UTTTBoard, UTTTBoardDecision
+
+player1, player2 = RandomUTTTPlayer(), RandomUTTTPlayer()
+game = SingleGame(player1, player2, UTTTBoard, UTTTBoardDecision)
+result = game.playAGame()
 ```
 When using the RL player, it will need to be initialized with a learning algorithm of your choice. I've already provided two sample learning algorithms: `TableLearning` and `NNUltimateLearning`
 ```python
-    from game import SingleGame
-    from learning import TableLearning
-    from ultimateplayer import RandomUTTTPlayer, RLUTTTPlayer
-    from ultimateboard import UTTTBoard, UTTTBoardDecision
-    
-    player1, player2 = RLUTTTPlayer(TableLearning(UTTTBoardDecision)), RandomUTTTPlayer() 
-    game = SingleGame(player1, player2, UTTTBoard, UTTTBoardDecision)
-    result = game.playAGame()
+from game import SingleGame
+from learning import TableLearning
+from ultimateplayer import RandomUTTTPlayer, RLUTTTPlayer
+from ultimateboard import UTTTBoard, UTTTBoardDecision
+
+player1, player2 = RLUTTTPlayer(TableLearning(UTTTBoardDecision)), RandomUTTTPlayer() 
+game = SingleGame(player1, player2, UTTTBoard, UTTTBoardDecision)
+result = game.playAGame()
 ```
 
 ## Learning Algorithm
@@ -75,7 +79,6 @@ class GenericLearning(object):
 ```
 Any learning model must inherit from this class and implement the above methods. For examples see `TableLearning` for a lookup table based solution, and `NNUltimateLearning` for a neural network based solution.
 Every *board state* is an 81-character string which represents a raster scan of the entire 9x9 board (row-wise). You can map this to numeric entries as necessary.
-Here's an example state: `"    X                               O   XO OO    X                 X        X    "`
 
 ## Using your own learning algorithm
 Simply implement your learning model e.g. `MyLearningModel` by inheriting from `GenericLearning`. Then instantiate the provided reinforcement learning bot with an instance of this model:
