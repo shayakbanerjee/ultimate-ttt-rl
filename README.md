@@ -22,6 +22,7 @@ To view the state of the board at any given time (you'll get a console output):
 ```python
     b.printBoard()
 ```
+The co-ordinate system is shown below:
 
 ## Players
 There are two implemented bots for playing the game
