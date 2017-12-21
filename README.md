@@ -22,33 +22,39 @@ To view the state of the board at any given time (you'll get a console output):
 ```python
     b.printBoard()
 ```
-The co-ordinate system is shown below:
+
+The co-ordinate system is shown below, and is the same for the master board, as well as any tile within it:
+![ultimate tic tac toe image](https://github.com/shayakbanerjee/ultimate-ttt-rl/raw/master/figures/coordinate_system.png)
 
 ## Players
 There are two implemented bots for playing the game
 1. `RandomUTTTPlayer` who makes moves at random
 1. `RLUTTTPlayer` who makes moves based on a user-supplied learning algorithm
 
-To play the game with these different bots.
+To play the game with one or a combination of these bots, use the `SingleGame` class. E.g. with two random players
 ```python
-    def playAGame(self, board):
-        player1 = RandomUTTTPlayer()
-        player2 = RLUTTTPlayer()
-        while board.getBoardDecision() == self.BoardDecisionClass.ACTIVE:
-            player1.setBoard(board, GridStates.PLAYER_X)
-            player2.setBoard(board, GridStates.PLAYER_O)
-            pState1 = self.player1.makeNextMove()
-            player1.learnFromMove(pState1)
-            player2.learnFromMove(pState1)
-            pState2 = self.player2.makeNextMove()
-            player1.learnFromMove(pState2)
-            player2.learnFromMove(pState2)
-        return board.getBoardDecision()
+    from game import SingleGame
+    from ultimateplayer import RandomUTTTPlayer
+    from ultimateboard import UTTTBoard, UTTTBoardDecision
+    
+    player1, player2 = RandomUTTTPlayer(), RandomUTTTPlayer()
+    game = SingleGame(player1, player2, UTTTBoard, UTTTBoardDecision)
+    result = game.playAGame()
 ```
-The `learnFromMove` calls are necessary for the bots to learn from every move. The example shows a random player against a reinforcement learning player, but you can choose to play RL vs RL or Random vs Random. Switching the order of player1 and player2 will assign `O` to the RL player and `X` to the Random player.
+When using the RL player, it will need to be initialized with a learning algorithm of your choice. I've already provided two sample learning algorithms: `TableLearning` and `NNUltimateLearning`
+```python
+    from game import SingleGame
+    from learning import TableLearning
+    from ultimateplayer import RandomUTTTPlayer, RLUTTTPlayer
+    from ultimateboard import UTTTBoard, UTTTBoardDecision
+    
+    player1, player2 = RLUTTTPlayer(TableLearning(UTTTBoardDecision)), RandomUTTTPlayer() 
+    game = SingleGame(player1, player2, UTTTBoard, UTTTBoardDecision)
+    result = game.playAGame()
+```
 
 ## Learning Algorithm
-The learning algorithm is the key piece to the puzzle for making the RL bot improve its chances of winning over time. There is a generic template provided for the learning algorithm:
+The reinforcement learning (RL) player uses a learning algorithm to improve its chances of winning as it plays a number of games and learns about different positions. The learning algorithm is the key piece to the puzzle for making the RL bot improve its chances of winning over time. There is a generic template provided for the learning algorithm:
 ```python
 class GenericLearning(object):
     def getBoardStateValue(self, player, board, boardState):
@@ -68,34 +74,45 @@ class GenericLearning(object):
         pass
 ```
 Any learning model must inherit from this class and implement the above methods. For examples see `TableLearning` for a lookup table based solution, and `NNUltimateLearning` for a neural network based solution.
+Every *board state* is an 81-character string which represents a raster scan of the entire 9x9 board (row-wise). You can map this to numeric entries as necessary.
+Here's an example state: `"    X                               O   XO OO    X                 X        X    "`
 
 ## Using your own learning algorithm
 Simply implement your learning model e.g. `MyLearningModel` by inheriting from `GenericLearning`. Then instantiate the provided reinforcement learning bot with an instance of this model:
 ```python
-   from ultimateboard import UTTTBoardDecision
+from ultimateboard import UTTTBoardDecision
+from learning import GenericLearning
+import random
+from ultimateplayer import RLUTTTPlayer
+
+class MyLearningModel(GenericLearning):
+   def getBoardStateValue(self, player, board, boardState):
+       # Your implementation here
+       value = random.uniform() # As an example (and a very poor one)
+       return value   # Must be a numeric value
    
-   class MyLearningModel(GenericLearning):
-       def getBoardStateValue(self, player, board, boardState):
-           # Your implementation here
-           return value
-       
-       def learnFromMove(self, player, board, prevBoardState):
-           # Your implementation here       
-   
-   learningModel = MyLearningModel(UTTTBoardDecision)
-   learningPlayer = RLUTTTPlayer(learningModel)
+   def learnFromMove(self, player, board, prevBoardState):
+       # Your implementation here - learn some value for the previousBoardState
+       pass
+
+learningModel = MyLearningModel(UTTTBoardDecision)
+learningPlayer = RLUTTTPlayer(learningModel)
 ```
 
 ## Sequence of games
 More often than not you will want to just play a sequence of games and observe the learning over time. Code samples for that have been provided and uses the `GameSequence` class
 ```python
-    learningPlayer = RLUTTTPlayer()
-    randomPlayer = RandomUTTTPlayer()
-    results = []
-    numberOfSetsOfGames = 40
-    for i in range(numberOfSetsOfGames):
-        games = GameSequence(100, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
-        results.append(games.playGamesAndGetWinPercent())
+from ultimateplayer import RLUTTTPlayer, RandomUTTTPlayer
+from game import GameSequence
+from ultimateboard import UTTTBoard, UTTTBoardDecision
+
+learningPlayer = RLUTTTPlayer()
+randomPlayer = RandomUTTTPlayer()
+results = []
+numberOfSetsOfGames = 40
+for i in range(numberOfSetsOfGames):
+    games = GameSequence(100, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
+    results.append(games.playGamesAndGetWinPercent())
 ```
 
 ## Prerequisites
