@@ -41,11 +41,17 @@ def playUltimateAndPlotResults():
     drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction',title='RL Player (O) vs. Random Player (X)')
 
 def playUltimateForTraining():
-    learningPlayer = RLUTTTPlayer(TableLearning())
+    learningModel = TableLearning()
+    learningPlayer = RLUTTTPlayer(learningModel)
     randomPlayer = RandomUTTTPlayer()
-    games = GameSequence(4000, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
-    games.playGamesAndGetWinPercent()
-    learningPlayer.saveLearning(NNUltimateLearning.TABLE_LEARNING_FILE)
+    results, tempFileName = [], 'temp_learning.json'
+    for i in range(40):
+        games = GameSequence(1000, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
+        games.playGamesAndGetWinPercent()
+        learningPlayer.saveLearning(tempFileName)
+        results.append(os.path.getsize(tempFileName))
+    print '\n'.join(map(str, results))
+    os.remove(tempFileName)
 
 def writeResultsToFile(results):
     with open(WIN_PCT_FILE, 'a') as outfile:
@@ -63,8 +69,17 @@ def plotResultsFromFile(resultsFile):
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}
     drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction', title='RL Player (O) vs. Random Player (X)')
 
+def plotMemoryUsageFromFile(memoryFile):
+    results = []
+    with open(memoryFile, 'r') as infile:
+        reader = csv.reader(infile)
+        results = map(tuple, reader)
+    plotValues = {'Memory Usage': zip(map(lambda x: x[1], results), map(lambda x: x[2], results))}
+    drawXYPlotByFactor(plotValues, 'Number of Simulations', 'Memory Usage (MB)')
+
 if __name__ == '__main__':
     #playTTTAndPlotResults()
     #playUltimateForTraining()
-    playUltimateAndPlotResults()
+    #playUltimateAndPlotResults()
     #plotResultsFromFile('results/ultimate_nn1_results_o.csv')
+    plotMemoryUsageFromFile('results/memory_scaling.csv')
