@@ -45,22 +45,22 @@ class TTTBoard():
         if winCheck(diagonal2):
             self.decision = getWinState(diagonal2)
             return
-        if filter(lambda x: GridStates.EMPTY in x, self.board):  # Board is full
-            self.decision = TTTBoardDecision.ACTIVE
-        else:
+        if len(self.getEmptyBoardPlaces()) == 0:
             self.decision = TTTBoardDecision.DRAW
+        else:
+            self.decision = TTTBoardDecision.ACTIVE
 
     def makeMove(self, who, i, j, verbose=True):   # who is PLAYER_X or PLAYER_O
         if self.board[i][j] != GridStates.EMPTY:
-            print 'That location is not empty'
+            print('That location is not empty')
             return
         self.board[i][j] = who
         #self.printBoard()
         self.determineBoardState()
         if self.decision == TTTBoardDecision.DRAW and verbose is True:
-            print 'This TTT game was drawn!'
+            print('This TTT game was drawn!')
         elif self.decision != TTTBoardDecision.ACTIVE and verbose is True:
-            print 'This TTT game was won by %s'%(GridStates.PLAYER_X if self.decision == TTTBoardDecision.WON_X else GridStates.PLAYER_O)
+            print('This TTT game was won by %s'%(GridStates.PLAYER_X if self.decision == TTTBoardDecision.WON_X else GridStates.PLAYER_O))
 
     def printBoard(self):
         delimiter = "-------------"
@@ -70,7 +70,7 @@ class TTTBoard():
         cells = []
         for (i,j) in itertools.product(range(3), range(3)):
             cells.append(self.board[i][j])
-        print BOARD_FORMAT.format(*cells)
+        print(BOARD_FORMAT.format(*cells))
 
     def getBoardRowString(self, row):
         return "| {0} | {1} | {2} |".format(*self.board[row])

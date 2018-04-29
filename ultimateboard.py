@@ -20,7 +20,7 @@ class UTTTBoard(object):
 
     def determineBoardState(self):
         def winCheck(listOfThree):
-            threeResults = map(lambda x: x.getBoardDecision(), listOfThree)
+            threeResults = list(map(lambda x: x.getBoardDecision(), listOfThree))
             return len(set(threeResults)) == 1 and threeResults[0] in [TTTBoardDecision.WON_O, TTTBoardDecision.WON_X]
 
         def getWinState(listOfThree):
@@ -68,16 +68,16 @@ class UTTTBoard(object):
         tttboard = self.board[whichBoard[0]][whichBoard[1]]
         i, j = whichLocation[0], whichLocation[1]
         if tttboard.getGrid(i, j) != GridStates.EMPTY:
-            print 'That location is not empty'
+            print('That location is not empty')
             return
         tttboard.makeMove(who, i, j, verbose=False)
         #self.printBoard()
         self.determineBoardState()
         if self.decision == UTTTBoardDecision.DRAW:
-            print 'This Ultimate-TTT game was drawn!'
+            print('This Ultimate-TTT game was drawn!')
             self.nextBoardLocation = [None, None]
         elif self.decision != UTTTBoardDecision.ACTIVE:
-            print 'This Ultimate-TTT game was won by %s'%(GridStates.PLAYER_X if self.decision == UTTTBoardDecision.WON_X else GridStates.PLAYER_O)
+            print('This Ultimate-TTT game was won by %s'%(GridStates.PLAYER_X if self.decision == UTTTBoardDecision.WON_X else GridStates.PLAYER_O))
             self.nextBoardLocation = [None, None]
         else:
             nextTttboard = self.board[i][j]
@@ -90,7 +90,7 @@ class UTTTBoard(object):
             rowString += self.getBoardRowString(boardRow, 0) + '\n' + delimiter
             rowString += self.getBoardRowString(boardRow, 1) + '\n' + delimiter
             rowString += self.getBoardRowString(boardRow, 2) + '\n' + delimiter[:-1]
-            print rowString
+            print(rowString)
 
     def getBoardRowString(self, boardRow, row):
         rowString = ''
@@ -121,4 +121,4 @@ if __name__ == '__main__':
     b.makeMove(GridStates.PLAYER_O, b.getNextBoardLocation(), (2, 1))
     b.makeMove(GridStates.PLAYER_X, b.getNextBoardLocation(), (1, 1))
     b.printBoard()
-    print b.getBoardState()
+    print(b.getBoardState())

@@ -1,0 +1,56 @@
+Using TensorFlow backend.
+Traceback (most recent call last):
+  File "/home/foobar/code/super_tic_tac_toe_ai/tensorflow/lib/python3.5/random.py", line 262, in choice
+    i = self._randbelow(len(seq))
+  File "/home/foobar/code/super_tic_tac_toe_ai/tensorflow/lib/python3.5/random.py", line 239, in _randbelow
+    r = getrandbits(k)          # 0 <= r < 2**k
+ValueError: number of bits must be greater than zero
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "game.py", line 49, in <module>
+    game.playAGame()
+  File "game.py", line 16, in playAGame
+    pState1 = self.player1.makeNextMove()
+  File "/home/foobar/code/super_tic_tac_toe_ai/ultimate-ttt-rl/ultimateplayer.py", line 38, in makeNextMove
+    pickOne = random.choice(emptyPlaces)
+  File "/home/foobar/code/super_tic_tac_toe_ai/tensorflow/lib/python3.5/random.py", line 264, in choice
+    raise IndexError('Cannot choose from an empty sequence')
+IndexError: Cannot choose from an empty sequence
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 63, in apport_excepthook
+    from apport.fileutils import likely_packaged, get_recent_crashes
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 5, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 30, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 23, in <module>
+    from apport.packaging_impl import impl as packaging
+  File "/usr/lib/python3/dist-packages/apport/packaging_impl.py", line 24, in <module>
+    import apt
+  File "/usr/lib/python3/dist-packages/apt/__init__.py", line 23, in <module>
+    import apt_pkg
+ImportError: No module named 'apt_pkg'
+
+Original exception was:
+Traceback (most recent call last):
+  File "/home/foobar/code/super_tic_tac_toe_ai/tensorflow/lib/python3.5/random.py", line 262, in choice
+    i = self._randbelow(len(seq))
+  File "/home/foobar/code/super_tic_tac_toe_ai/tensorflow/lib/python3.5/random.py", line 239, in _randbelow
+    r = getrandbits(k)          # 0 <= r < 2**k
+ValueError: number of bits must be greater than zero
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "game.py", line 49, in <module>
+    game.playAGame()
+  File "game.py", line 16, in playAGame
+    pState1 = self.player1.makeNextMove()
+  File "/home/foobar/code/super_tic_tac_toe_ai/ultimate-ttt-rl/ultimateplayer.py", line 38, in makeNextMove
+    pickOne = random.choice(emptyPlaces)
+  File "/home/foobar/code/super_tic_tac_toe_ai/tensorflow/lib/python3.5/random.py", line 264, in choice
+    raise IndexError('Cannot choose from an empty sequence')
+IndexError: Cannot choose from an empty sequence

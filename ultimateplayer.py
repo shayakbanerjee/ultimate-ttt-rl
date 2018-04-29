@@ -35,7 +35,12 @@ class RandomUTTTPlayer(UTTTPlayer):
                 activeBoardLocations = self.board.getActiveBoardLocations()
                 nextBoardLocation = random.choice(activeBoardLocations)
             emptyPlaces = self.board.getEmptyBoardPlaces(nextBoardLocation)
-            pickOne = random.choice(emptyPlaces)
+            try:
+                pickOne = random.choice(emptyPlaces)
+            except:
+                import pdb;
+                pdb.set_trace();
+
             self.board.makeMove(self.player, nextBoardLocation, pickOne)
         return previousState
 
@@ -96,4 +101,4 @@ class RLUTTTPlayer(UTTTPlayer):
 if __name__  == '__main__':
     board = UTTTBoard()
     player1 = RandomUTTTPlayer()
-    player2 = RLUTTTPlayer(TableLearning(UTTTBoardDecision))
+    player2 = RandomUTTTPlayer()
