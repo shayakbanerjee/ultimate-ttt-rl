@@ -48,4 +48,4 @@ if __name__ == '__main__':
     game = SingleGame(player1, player2, UTTTBoard, UTTTBoardDecision)
     game.playAGame()
     gameSeq = GameSequence(10, player1, player2, UTTTBoard, UTTTBoardDecision)
-    print gameSeq.playGamesAndGetWinPercent()
+    print(gameSeq.playGamesAndGetWinPercent())
