@@ -120,3 +120,8 @@ for i in range(numberOfSetsOfGames):
 
 ## Prerequisites
 You will need to have [numpy](http://www.numpy.org) installed to work with this code. If using the neural network based learner in the examples provided, you will also need to have [keras](https://keras.io) installed. This will require one of [Tensorflow](https://github.com/tensorflow/tensorflow), [Theano](https://github.com/Theano/Theano) or [CNTK](https://github.com/Microsoft/cntk).
+Install via:
+
+```bash
+pip install -r requirements.txt
+```
